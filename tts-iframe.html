@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TTS Controls</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem;
+    }
+    
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      min-width: 80px;
+    }
+    
+    .btn-play {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    .btn-play:hover {
+      background: #45a049;
+      transform: translateY(-1px);
+    }
+    
+    .btn-pause {
+      background: #2196F3;
+      color: white;
+    }
+    
+    .btn-pause:hover {
+      background: #1976D2;
+      transform: translateY(-1px);
+    }
+    
+    .btn-resume {
+      background: #FF9800;
+      color: white;
+    }
+    
+    .btn-resume:hover {
+      background: #F57C00;
+      transform: translateY(-1px);
+    }
+    
+    .btn-stop {
+      background: #f44336;
+      color: white;
+    }
+    
+    .btn-stop:hover {
+      background: #da190b;
+      transform: translateY(-1px);
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .info-text {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <button class="btn-play" onclick="speakText()" id="playBtn">🔊 Play</button>
+    <button class="btn-pause" onclick="pauseSpeech()" id="pauseBtn" disabled>⏸ Pause</button>
+    <button class="btn-resume" onclick="resumeSpeech()" id="resumeBtn" disabled>▶ Resume</button>
+    <button class="btn-stop" onclick="stopSpeech()" id="stopBtn" disabled>⏹ Stop</button>
+  </div>
+  
+  <div class="info-text">
+    Click Play and paste your text to read aloud
+  </div>
+
+  <script>
+    let utterance;
+    let isPlaying = false;
+    
+    function speakText() {
+      const text = prompt("Paste or type the text you want to read aloud:", "");
+      
+      if (!text || !text.trim()) {
+        return;
+      }
+      
+      utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.lang = "en-US";
+      
+      utterance.onstart = function() {
+        isPlaying = true;
+        updateButtonStates();
+      };
+      
+      utterance.onend = function() {
+        isPlaying = false;
+        updateButtonStates();
+      };
+      
+      utterance.onpause = function() {
+        updateButtonStates();
+      };
+      
+      utterance.onresume = function() {
+        updateButtonStates();
+      };
+      
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+      
+      updateButtonStates();
+    }
+    
+    function pauseSpeech() {
+      if (speechSynthesis.speaking && !speechSynthesis.paused) {
+        speechSynthesis.pause();
+      }
+    }
+    
+    function resumeSpeech() {
+      if (speechSynthesis.paused) {
+        speechSynthesis.resume();
+      }
+    }
+    
+    function stopSpeech() {
+      speechSynthesis.cancel();
+      isPlaying = false;
+      updateButtonStates();
+    }
+    
+    function updateButtonStates() {
+      const playBtn = document.getElementById("playBtn");
+      const pauseBtn = document.getElementById("pauseBtn");
+      const resumeBtn = document.getElementById("resumeBtn");
+      const stopBtn = document.getElementById("stopBtn");
+      
+      playBtn.disabled = isPlaying;
+      pauseBtn.disabled = !isPlaying || speechSynthesis.paused;
+      resumeBtn.disabled = !speechSynthesis.paused;
+      stopBtn.disabled = !isPlaying;
+    }
+  </script>
+</body>
+</html>
