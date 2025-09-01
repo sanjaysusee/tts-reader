@@ -304,7 +304,7 @@
       updateStatus('Reading completed');
       updateButtonStates();
       stopProgress();
-      highlightWord(-1); // Remove highlighting
+      // highlightWord(-1); // Disabled to prevent HTML tags
     }
     
     function onSpeechPause() {
@@ -320,12 +320,16 @@
     function onSpeechBoundary(event) {
       if (event.name === 'word') {
         wordIndex = event.charIndex;
-        highlightCurrentWord();
+        // Disable word highlighting to prevent HTML tags from showing
+        // highlightCurrentWord();
         updateProgress();
       }
     }
     
     function highlightCurrentWord() {
+      // Disable word highlighting to prevent HTML tags from showing
+      return;
+      
       // Remove previous highlighting
       highlightWord(-1);
       
@@ -341,6 +345,9 @@
     }
     
     function highlightWord(index) {
+      // Disable word highlighting to prevent HTML tags from showing
+      return;
+      
       const textarea = document.getElementById('courseContent');
       const text = textarea.value;
       
@@ -395,7 +402,7 @@
       updateStatus('Reading stopped');
       updateButtonStates();
       stopProgress();
-      highlightWord(-1);
+      // highlightWord(-1); // Disabled to prevent HTML tags
     }
     
     function updateButtonStates() {
