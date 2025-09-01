@@ -90,7 +90,28 @@
     let isPlaying = false;
     
     function speakText() {
-      const text = prompt("Enter text to read aloud:", "");
+      let text = "";
+      
+      try {
+        const parentDocument = window.parent.document;
+        const body = parentDocument.body;
+        if (body) {
+          const bodyClone = body.cloneNode(true);
+          const iframeInClone = bodyClone.querySelector("iframe[src*=\"tts-iframe.html\"]");
+          if (iframeInClone) {
+            iframeInClone.remove();
+          }
+          text = bodyClone.textContent || bodyClone.innerText || "";
+          text = text.replace(/\s+/g, " ").trim();
+        }
+        
+        if (!text || text.trim().length < 10) {
+          text = prompt("Enter text to read aloud:", "");
+        }
+      } catch (e) {
+        text = prompt("Enter text to read aloud:", "");
+      }
+      
       if (!text || !text.trim()) {
         return;
       }
