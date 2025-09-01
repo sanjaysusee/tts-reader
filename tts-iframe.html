@@ -2,430 +2,157 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TTS Course Reader</title>
+  <title>TTS Controls</title>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      padding: 1.5rem;
-      text-align: center;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
-    }
-    
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 2rem;
-      border-radius: 16px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    }
-    
-    h3 {
-      margin: 0 0 1.5rem 0;
-      font-size: 1.8rem;
-      font-weight: 600;
-    }
-    
-    textarea {
-      width: 100%;
-      height: 200px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 12px;
-      font-size: 1rem;
-      background: rgba(255, 255, 255, 0.9);
-      color: #333;
-      resize: vertical;
-      font-family: inherit;
-    }
-    
-    textarea:focus {
-      outline: none;
-      border-color: rgba(255, 255, 255, 0.8);
-      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+      padding: 0;
+      background: transparent;
     }
     
     .controls {
       display: flex;
-      gap: 0.8rem;
+      gap: 0.5rem;
       justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 1.5rem;
+      align-items: center;
+      padding: 0.5rem;
     }
     
     button {
-      padding: 0.8rem 1.5rem;
+      padding: 0.5rem 1rem;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: 500;
       transition: all 0.2s ease;
-      min-width: 100px;
+      min-width: 80px;
     }
     
-    .btn-primary {
+    .btn-play {
       background: #4CAF50;
       color: white;
     }
     
-    .btn-primary:hover {
+    .btn-play:hover {
       background: #45a049;
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
     
-    .btn-secondary {
+    .btn-pause {
       background: #2196F3;
       color: white;
     }
     
-    .btn-secondary:hover {
+    .btn-pause:hover {
       background: #1976D2;
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
     
-    .btn-danger {
+    .btn-resume {
+      background: #FF9800;
+      color: white;
+    }
+    
+    .btn-resume:hover {
+      background: #F57C00;
+      transform: translateY(-1px);
+    }
+    
+    .btn-stop {
       background: #f44336;
       color: white;
     }
     
-    .btn-danger:hover {
+    .btn-stop:hover {
       background: #da190b;
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
     
-    .btn:disabled {
-      opacity: 0.6;
+    button:disabled {
+      opacity: 0.5;
       cursor: not-allowed;
       transform: none;
-    }
-    
-    .progress-container {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }
-    
-    .progress-bar {
-      width: 100%;
-      height: 8px;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #4CAF50, #45a049);
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-    
-    .status {
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-      opacity: 0.9;
-    }
-    
-    .word-highlight {
-      background: rgba(255, 255, 255, 0.3);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      margin: 0 0.1rem;
-      display: inline-block;
-      transition: all 0.2s ease;
-    }
-    
-    .word-highlight.active {
-      background: rgba(255, 255, 0, 0.6);
-      transform: scale(1.1);
-    }
-    
-    .settings {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-    
-    .setting-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .setting-group label {
-      font-size: 0.9rem;
-      opacity: 0.9;
-    }
-    
-    .setting-group input {
-      width: 60px;
-      padding: 0.3rem;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.9);
-      color: #333;
-    }
-    
-    .setting-group select {
-      padding: 0.3rem;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.9);
-      color: #333;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h3>📖 Course Text to Speech Reader</h3>
-    
-    <textarea id="courseContent" placeholder="Paste your course content here...&#10;&#10;You can paste:&#10;• Course materials&#10;• Study notes&#10;• Reading assignments&#10;• Any text content you want to hear"></textarea>
-    
-    <div class="settings">
-      <div class="setting-group">
-        <label for="voiceSelect">Voice:</label>
-        <select id="voiceSelect"></select>
-      </div>
-      <div class="setting-group">
-        <label for="rateInput">Speed:</label>
-        <input type="number" id="rateInput" min="0.5" max="2" step="0.1" value="1">
-      </div>
-      <div class="setting-group">
-        <label for="pitchInput">Pitch:</label>
-        <input type="number" id="pitchInput" min="0.5" max="2" step="0.1" value="1">
-      </div>
-    </div>
-    
-    <div class="controls">
-      <button class="btn-primary" onclick="speakCourse()" id="playBtn">🔊 Play</button>
-      <button class="btn-secondary" onclick="pauseCourse()" id="pauseBtn" disabled>⏸ Pause</button>
-      <button class="btn-secondary" onclick="resumeCourse()" id="resumeBtn" disabled>▶ Resume</button>
-      <button class="btn-danger" onclick="stopCourse()" id="stopBtn" disabled>⏹ Stop</button>
-    </div>
-    
-    <div class="progress-container">
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-      <div class="status" id="status">Ready to read</div>
-    </div>
+  <div class="controls">
+    <button class="btn-play" onclick="speakText()" id="playBtn">🔊 Play</button>
+    <button class="btn-pause" onclick="pauseSpeech()" id="pauseBtn" disabled>⏸ Pause</button>
+    <button class="btn-resume" onclick="resumeSpeech()" id="resumeBtn" disabled>▶ Resume</button>
+    <button class="btn-stop" onclick="stopSpeech()" id="stopBtn" disabled>⏹ Stop</button>
   </div>
 
   <script>
     let utterance;
-    let currentText = '';
-    let wordIndex = 0;
-    let words = [];
     let isPlaying = false;
-    let startTime = 0;
-    let totalDuration = 0;
     
-    // Initialize voices when page loads
-    window.addEventListener('load', function() {
-      populateVoices();
-      if (speechSynthesis.onvoiceschanged !== undefined) {
-        speechSynthesis.onvoiceschanged = populateVoices;
-      }
-    });
-    
-    function populateVoices() {
-      const voiceSelect = document.getElementById('voiceSelect');
-      const voices = speechSynthesis.getVoices();
-      
-      voiceSelect.innerHTML = '';
-      voices.forEach((voice, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = `${voice.name} (${voice.lang})`;
-        if (voice.lang.includes('en')) {
-          option.selected = true;
-        }
-        voiceSelect.appendChild(option);
-      });
-    }
-    
-    function speakCourse() {
-      const text = document.getElementById("courseContent").value.trim();
-      if (!text) {
-        alert("Please paste some course content first!");
+    function speakText() {
+      const text = prompt("Enter text to read aloud:", "");
+      if (!text || !text.trim()) {
         return;
       }
       
-      currentText = text;
-      words = text.split(/\s+/);
-      wordIndex = 0;
-      isPlaying = true;
-      startTime = Date.now();
-      
       utterance = new SpeechSynthesisUtterance(text);
-      
-      // Get selected voice
-      const voiceSelect = document.getElementById('voiceSelect');
-      const voices = speechSynthesis.getVoices();
-      if (voices.length > 0) {
-        utterance.voice = voices[voiceSelect.value];
-      }
-      
-      utterance.rate = parseFloat(document.getElementById("rateInput").value);
-      utterance.pitch = parseFloat(document.getElementById("pitchInput").value);
+      utterance.rate = 1;
+      utterance.pitch = 1;
       utterance.lang = "en-US";
       
-      // Event handlers
-      utterance.onstart = onSpeechStart;
-      utterance.onend = onSpeechEnd;
-      utterance.onpause = onSpeechPause;
-      utterance.onresume = onSpeechResume;
-      utterance.onboundary = onSpeechBoundary;
+      utterance.onstart = function() {
+        isPlaying = true;
+        updateButtonStates();
+      };
+      
+      utterance.onend = function() {
+        isPlaying = false;
+        updateButtonStates();
+      };
+      
+      utterance.onpause = function() {
+        updateButtonStates();
+      };
+      
+      utterance.onresume = function() {
+        updateButtonStates();
+      };
       
       speechSynthesis.cancel();
       speechSynthesis.speak(utterance);
       
       updateButtonStates();
-      updateStatus('Reading...');
     }
     
-    function onSpeechStart() {
-      updateStatus('Reading started');
-      startProgress();
-    }
-    
-    function onSpeechEnd() {
-      isPlaying = false;
-      updateStatus('Reading completed');
-      updateButtonStates();
-      stopProgress();
-      // highlightWord(-1); // Disabled to prevent HTML tags
-    }
-    
-    function onSpeechPause() {
-      updateStatus('Reading paused');
-      updateButtonStates();
-    }
-    
-    function onSpeechResume() {
-      updateStatus('Reading resumed');
-      updateButtonStates();
-    }
-    
-    function onSpeechBoundary(event) {
-      if (event.name === 'word') {
-        wordIndex = event.charIndex;
-        // Disable word highlighting to prevent HTML tags from showing
-        // highlightCurrentWord();
-        updateProgress();
-      }
-    }
-    
-    function highlightCurrentWord() {
-      // Disable word highlighting to prevent HTML tags from showing
-      return;
-      
-      // Remove previous highlighting
-      highlightWord(-1);
-      
-      // Find current word
-      let currentCharIndex = 0;
-      for (let i = 0; i < words.length; i++) {
-        if (currentCharIndex >= wordIndex) {
-          highlightWord(i);
-          break;
-        }
-        currentCharIndex += words[i].length + 1; // +1 for space
-      }
-    }
-    
-    function highlightWord(index) {
-      // Disable word highlighting to prevent HTML tags from showing
-      return;
-      
-      const textarea = document.getElementById('courseContent');
-      const text = textarea.value;
-      
-      if (index >= 0 && index < words.length) {
-        const word = words[index];
-        const regex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
-        textarea.value = text.replace(regex, `<span class="word-highlight active">${word}</span>`);
-      }
-    }
-    
-    function startProgress() {
-      totalDuration = utterance.text.length * 50; // Rough estimate: 50ms per character
-      updateProgress();
-    }
-    
-    function updateProgress() {
-      if (!isPlaying) return;
-      
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min((elapsed / totalDuration) * 100, 100);
-      
-      document.getElementById('progressFill').style.width = progress + '%';
-      
-      if (isPlaying) {
-        requestAnimationFrame(updateProgress);
-      }
-    }
-    
-    function stopProgress() {
-      document.getElementById('progressFill').style.width = '0%';
-    }
-    
-    function pauseCourse() {
+    function pauseSpeech() {
       if (speechSynthesis.speaking && !speechSynthesis.paused) {
         speechSynthesis.pause();
-        updateStatus('Reading paused');
-        updateButtonStates();
       }
     }
     
-    function resumeCourse() {
+    function resumeSpeech() {
       if (speechSynthesis.paused) {
         speechSynthesis.resume();
-        updateStatus('Reading resumed');
-        updateButtonStates();
       }
     }
     
-    function stopCourse() {
+    function stopSpeech() {
       speechSynthesis.cancel();
       isPlaying = false;
-      updateStatus('Reading stopped');
       updateButtonStates();
-      stopProgress();
-      // highlightWord(-1); // Disabled to prevent HTML tags
     }
     
     function updateButtonStates() {
-      const playBtn = document.getElementById('playBtn');
-      const pauseBtn = document.getElementById('pauseBtn');
-      const resumeBtn = document.getElementById('resumeBtn');
-      const stopBtn = document.getElementById('stopBtn');
+      const playBtn = document.getElementById("playBtn");
+      const pauseBtn = document.getElementById("pauseBtn");
+      const resumeBtn = document.getElementById("resumeBtn");
+      const stopBtn = document.getElementById("stopBtn");
       
       playBtn.disabled = isPlaying;
       pauseBtn.disabled = !isPlaying || speechSynthesis.paused;
       resumeBtn.disabled = !speechSynthesis.paused;
       stopBtn.disabled = !isPlaying;
     }
-    
-    function updateStatus(message) {
-      document.getElementById('status').textContent = message;
-    }
-    
-    // Auto-resize textarea
-    document.getElementById('courseContent').addEventListener('input', function() {
-      this.style.height = 'auto';
-      this.style.height = Math.min(this.scrollHeight, 300) + 'px';
-    });
   </script>
 </body>
 </html>
