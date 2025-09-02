@@ -94,7 +94,7 @@
   </div>
   
   <div class="info-text">
-    Click Play and paste your text to read aloud
+    Click Play to read the content around this iframe
   </div>
 
   <script>
@@ -102,7 +102,31 @@
     let isPlaying = false;
     
     function speakText() {
-      const text = prompt("Paste or type the text you want to read aloud:", "");
+      let text = '';
+      
+      try {
+        // Try to get text from parent page
+        const parentDocument = window.parent.document;
+        if (parentDocument && parentDocument.body) {
+          // Get all text content from the parent page
+          text = parentDocument.body.textContent || parentDocument.body.innerText || '';
+          
+          // Clean up the text
+          text = text.replace(/\s+/g, ' ').trim();
+          
+          // Remove very long text (keep it reasonable)
+          if (text.length > 5000) {
+            text = text.substring(0, 5000) + '...';
+          }
+        }
+      } catch (e) {
+        console.log('Cannot access parent page due to cross-origin restrictions');
+      }
+      
+      // If no text found or cross-origin issue, use prompt
+      if (!text || text.trim().length < 10) {
+        text = prompt("Enter text to read aloud:", "");
+      }
       
       if (!text || !text.trim()) {
         return;
